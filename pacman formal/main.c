@@ -1,14 +1,6 @@
-//
-//  main.c
-//  pacman formal
-//
-//  Created by 古曉鄉 on 2024/11/20.
-//
-
 #include <stdio.h>
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
+int main(void) {
     printf("Hello, World!\n");
     return 0;
 }
