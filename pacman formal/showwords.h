@@ -15,7 +15,7 @@ void show_words(int a){
             break;
         }
         case 2:{
-            printf("\n// press any key to go back to main screen...\n");
+            printf("\n// press any key to go back to menu...\n");
             break;
         }
         case 3:{

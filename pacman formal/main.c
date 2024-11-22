@@ -10,6 +10,8 @@
 int main(void) {
     while(1){
         system("stty raw");
+        int end_buffer = 0;
+        
     here:
         show_words(1);
         while((key1 = getchar()) != 'p'){
@@ -25,6 +27,7 @@ int main(void) {
             switch(choose1){
                 case NORMAL:{
                     normal_mode();
+                    goto there;
                     break;
                 }
                 case INFINITE:{
@@ -77,7 +80,6 @@ int main(void) {
                 }
             }
         }
-        
         system("stty cook");
         break;
     }

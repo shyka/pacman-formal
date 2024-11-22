@@ -8,11 +8,21 @@
 #include "custom_function.h"
 
 void normal_mode(void){
-    int currentspot_x, currentspot_y;
     srand(time(NULL));
-    
+    score = 0;
+    heart = 3;
     level = 1;
     stage_change(NORMAL, level);
+    for(int i = 0; i < 4; i++){
+        while(1){
+            ghostspot_x = rand() % 20;
+            ghostspot_y = rand() % 20;
+            if(current_LevelMap[ghostspot_y][ghostspot_x] != WALL && current_LevelMap[ghostspot_y][ghostspot_x] != GHOST){
+                current_LevelMap[ghostspot_y][ghostspot_y] = '@'; // 隨機生成一開始鬼魂的位置（不會在‘＃’, '@'生成）
+                break;
+            }
+        }
+    }
     while(1){
         currentspot_x = rand() % 20;
         currentspot_y = rand() % 20;
@@ -28,6 +38,7 @@ void normal_mode(void){
     char key;
     int step_checker_x = currentspot_x, step_checker_y = currentspot_y;
     enum MoveAction move_number;
+   
     while((key = getchar()) != 'p'){
         printf("\n\n");
         switch(key){
@@ -35,16 +46,19 @@ void normal_mode(void){
             case 's': move_number = DOWN; break;
             case 'd': move_number = RIGHT; break;
             case 'w': move_number = UP; break;
+            case 'p': move_number = PAUSE; break;
             default: move_number = 100; break;
         }
+        
         switch(move_number){
             case UP:{
-                if(current_LevelMap[step_checker_y - 1][step_checker_x] != WALL){
+                ghost_logic_function(&step_checker_y, &step_checker_x, UP); // detect '@' and execute its logic function
+                step_checker_x = currentspot_x;
+                step_checker_y = currentspot_y;
+                if(current_LevelMap[step_checker_y - 1][step_checker_x] != WALL && current_LevelMap[step_checker_y - 1][step_checker_x] != GHOST){
+                    //if next step don't encounter with WALL or GHOST, swap 'C' to next spot
                     charswap(&current_LevelMap[currentspot_y][currentspot_x], &current_LevelMap[currentspot_y - 1][currentspot_x]);
-                    if(current_LevelMap[step_checker_y][step_checker_x] == DOT){
-                        charreplace(&current_LevelMap[step_checker_y][step_checker_x], ' ');
-                        score += 1;
-                    }
+                    dot_logic_function(&step_checker_y, &step_checker_x); // detect '.' and execute its logic function
                     currentspot_y -= 1;
                     step_checker_x = currentspot_x;
                     step_checker_y = currentspot_y;
@@ -52,12 +66,12 @@ void normal_mode(void){
                 break;
             }
             case DOWN:{
-                if(current_LevelMap[step_checker_y + 1][step_checker_x] != WALL){
+                ghost_logic_function(&step_checker_y, &step_checker_x, DOWN);
+                step_checker_x = currentspot_x;
+                step_checker_y = currentspot_y;
+                if(current_LevelMap[step_checker_y + 1][step_checker_x] != WALL && current_LevelMap[step_checker_y + 1][step_checker_x] != GHOST){
                     charswap(&current_LevelMap[currentspot_y][currentspot_x], &current_LevelMap[currentspot_y + 1][currentspot_x]);
-                    if(current_LevelMap[step_checker_y][step_checker_x] == DOT){
-                        charreplace(&current_LevelMap[step_checker_y][step_checker_x], ' ');
-                        score += 1;
-                    }
+                    dot_logic_function(&step_checker_y, &step_checker_x);
                     currentspot_y += 1;
                     step_checker_x = currentspot_x;
                     step_checker_y = currentspot_y;
@@ -65,12 +79,12 @@ void normal_mode(void){
                 break;
             }
             case RIGHT:{
-                if(current_LevelMap[step_checker_y][step_checker_x + 1] != WALL){
+                ghost_logic_function(&step_checker_y, &step_checker_x, RIGHT);
+                step_checker_x = currentspot_x;
+                step_checker_y = currentspot_y;
+                if(current_LevelMap[step_checker_y][step_checker_x + 1] != WALL && current_LevelMap[step_checker_y][step_checker_x + 1] != GHOST){
                     charswap(&current_LevelMap[currentspot_y][currentspot_x], &current_LevelMap[currentspot_y][currentspot_x + 1]);
-                    if(current_LevelMap[step_checker_y][step_checker_x] == DOT){
-                        charreplace(&current_LevelMap[step_checker_y][step_checker_x], ' ');
-                        score += 1;
-                    }
+                    dot_logic_function(&step_checker_y, &step_checker_x);
                     currentspot_x += 1;
                     step_checker_x = currentspot_x;
                     step_checker_y = currentspot_y;
@@ -78,16 +92,19 @@ void normal_mode(void){
                 break;
             }
             case LEFT:{
-                if(current_LevelMap[step_checker_y][step_checker_x - 1] != WALL){
+                ghost_logic_function(&step_checker_y, &step_checker_x, LEFT);
+                step_checker_x = currentspot_x;
+                step_checker_y = currentspot_y;
+                if(current_LevelMap[step_checker_y][step_checker_x - 1] != WALL && current_LevelMap[step_checker_y][step_checker_x - 1] != GHOST){
                     charswap(&current_LevelMap[currentspot_y][currentspot_x], &current_LevelMap[currentspot_y][currentspot_x - 1]);
-                    if(current_LevelMap[step_checker_y][step_checker_x] == DOT){
-                        charreplace(&current_LevelMap[step_checker_y][step_checker_x], ' ');
-                        score += 1;
-                    }
+                    dot_logic_function(&step_checker_y, &step_checker_x);
                     currentspot_x -= 1;
                     step_checker_x = currentspot_x;
                     step_checker_y = currentspot_y;
                 }
+                break;
+            }
+            case PAUSE:{
                 break;
             }
             default: break;
