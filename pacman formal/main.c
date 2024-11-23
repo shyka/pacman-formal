@@ -10,7 +10,7 @@
 int main(void) {
     while(1){
         system("stty raw");
-        int end_buffer = 0;
+        char key1, key2;
         
     here:
         show_words(1);
@@ -36,6 +36,7 @@ int main(void) {
                 }
                 case QUIT: break;
                 case RULE_CHECK:{
+                    char keyany;
                     show_words(2);
                     while((keyany = getchar()) != 'p'){
                         break;
