@@ -5,6 +5,7 @@
 
 struct Level {
     int ghost_number;
+    int levelUP_score;
     char array[22][22];
 };
 int current_ghost_number;
@@ -12,11 +13,11 @@ int current_ghost_spot_x[8];
 int current_ghost_spot_y[8];
 char current_LevelMap[22][22];
 struct Level map_N1 ={
-    4,
+    4, 40,
     "####################",
     "#..................#",
     "#####          #####",
-    "#$                 #",
+    "#$                H#",
     "#  ##############  #",
     "#                  #",
     "#..................#",
@@ -29,25 +30,94 @@ struct Level map_N1 ={
     "#..................#",
     "#                  #",
     "#  ##############  #",
-    "#                 $#",
+    "#H                $#",
     "#####          #####",
     "#..................#",
     "####################"
 };
+struct Level map_N2 ={
+//    4, 40,
+    "####################",
+    "#H                 #",
+    "#  ##    ##    ##  #",
+    "#...     ##$    ...#",
+    "#  ##############  #",
+    "#......  ..  ......#",
+    "#.  ###  ##  ###  .#",
+    "#.  ###  ##  ###  .#",
+    "#.   .        .   .#",
+    "#..................#",
+    "#.   .        .   .#",
+    "#.  ###  ##  ###  .#",
+    "#.  ###  ##  ###  .#",
+    "#.                .#",
+    "#......  ..  ......#",
+    "#  ##############  #",
+    "#...    $##     ...#",
+    "#  ##    ##    ##  #",
+    "#                 H#",
+    "####################"
+};
+struct Level map_N3 ={
+    4, 40,
+    "####################",
+    "#...#    ##    #...#",
+    "#. ##    ##    ## .#",
+    "#...     ##     ...#",
+    "#  #####    #####  #",
+    "#       ....       #",
+    "#.  ### .... ###  .#",
+    "#.  ###  ##  ###  .#",
+    "#.   .        .   .#",
+    "#$    ........     #",
+    "#.   .        .   .#",
+    "#.  ###  ##  ###  .#",
+    "#.  ###  ##  ###  .#",
+    "#.      ....      .#",
+    "#       ....       #",
+    "#  #####    #####  #",
+    "#...     ##     ...#",
+    "#. ##    ##    ## .#",
+    "#...#    ##    #...#",
+    "####################"
+};
+struct Level map_N4 ={
+    5, 40,
+    "####################",
+    "# $##############$ #",
+    "#  ##    ##    ##  #",
+    "#...     ##     ...#",
+    "#  ##  ######  ##  #",
+    "#   ...  ..  ...   #",
+    "#   ###..  ..###   #",
+    "#   ###..##..###   #",
+    "#    .        .    #",
+    "#   .....  .....   #",
+    "#    .   ##   .    #",
+    "#   ###..##..###   #",
+    "#   ###..##..###   #",
+    "#   ...  ..  ...   #",
+    "#......  ..  ......#",
+    "#  ##  ######  ##  #",
+    "#...     ##     ...#",
+    "#  ##    ##    ##  #",
+    "#  ##   H..    ##  #",
+    "####################"
+};
 
-int score = 0, heart = 3, level = 1, invincible_buffer = 0, invincible_step_remain = 0, Nmode = 0, Imode = 0;
-int currentspot_x, currentspot_y, ghostspot_x, ghostspot_y;
+int score = 0, total_score = 0, heart = 3, level = 1, invincible_buffer = 0, invincible_step_remain = 0, Nmode = 0, Imode = 0;
+int currentspot_x, currentspot_y, ghostspot_x, ghostspot_y, current_levelUP_score;
 enum selection1{NORMAL, INFINITE, QUIT, WRONG_KEY1, RULE_CHECK};
 enum selection2{AGAIN, BACK_TO_MENU, ENDGAME, WRONG_KEY2};
 enum MoveAction{UP, DOWN, RIGHT, LEFT, PAUSE};
-enum MapItems {WALL = '#', GHOST = '@', SGHOST = '!', DOT = '.', BIGDOT = '$', RECOVER = 'H'};
+enum MapItems {WALL = '#', GHOST = '@', SGHOST = '!', DOT = '.', BIGDOT = '$', HEAL = 'H'};
 
 void MapRenew(void){ // renew current map information
     for(int i = 0; i < 20; i++){
         for(int j = 0; j < 20; j++){
             printf("%2c ", current_LevelMap[i][j]);
             if(i == 0 && j == 19){
-                printf("   score : %d", score);
+                printf("   score : %d", score + total_score);
             }
             if(i == 1 && j == 19){
                 printf("   HP : %d", heart);
@@ -128,20 +198,19 @@ void dot_logic_function(int *y, int *x){
 
 
 void bigdot_logic_function(int *y, int *x){
-    if(invincible_step_remain > 0){
-        invincible_step_remain -= 1;
-        if(invincible_step_remain <= 0){
-            invincible_buffer = 0;
-            for(int i = 0; i < current_ghost_number; i++){
-                charreplace(&current_LevelMap[current_ghost_spot_y[i]][current_ghost_spot_x[i]], '@');
-            }
-        }
-    }
     if(current_LevelMap[*y][*x] == BIGDOT){
         charreplace(&current_LevelMap[*y][*x], ' ');
         invincible_buffer = 1;
-        invincible_step_remain = 30;
+        invincible_step_remain = 31;
         score += 3;
+    }
+}
+
+
+void heal_logic_function(int *y, int *x){
+    if(current_LevelMap[*y][*x] == HEAL){
+        charreplace(&current_LevelMap[*y][*x], ' ');
+        heart += 1;
     }
 }
 
@@ -173,6 +242,15 @@ void invincible_logic_function(int *y, int *x, enum MoveAction action){
             }
             current_ghost_number -= 1;
             score += 2;
+        }
+    }
+    if(invincible_step_remain > 0){
+        invincible_step_remain -= 1;
+        if(invincible_step_remain <= 0){
+            invincible_buffer = 0;
+            for(int i = 0; i < current_ghost_number; i++){
+                charreplace(&current_LevelMap[current_ghost_spot_y[i]][current_ghost_spot_x[i]], '@');
+            }
         }
     }
 }
@@ -264,11 +342,43 @@ void stage_change(enum selection1 a, int b){
             switch(b){
                 case 1:{
                     current_ghost_number = map_N1.ghost_number;
+                    current_levelUP_score = map_N1.levelUP_score;
                     for(int i = 0; i < 20; i++){
                         for(int j = 0; j < 20; j++){
                             current_LevelMap[i][j] = map_N1.array[i][j];
                         }
                     }
+                    break;
+                }
+                case 2:{
+                    current_ghost_number = map_N2.ghost_number;
+                    current_levelUP_score = map_N2.levelUP_score;
+                    for(int i = 0; i < 20; i++){
+                        for(int j = 0; j < 20; j++){
+                            current_LevelMap[i][j] = map_N2.array[i][j];
+                        }
+                    }
+                    break;
+                }
+                case 3:{
+                    current_ghost_number = map_N3.ghost_number;
+                    current_levelUP_score = map_N3.levelUP_score;
+                    for(int i = 0; i < 20; i++){
+                        for(int j = 0; j < 20; j++){
+                            current_LevelMap[i][j] = map_N3.array[i][j];
+                        }
+                    }
+                    break;
+                }
+                case 4:{
+                    current_ghost_number = map_N4.ghost_number;
+                    current_levelUP_score = map_N4.levelUP_score;
+                    for(int i = 0; i < 20; i++){
+                        for(int j = 0; j < 20; j++){
+                            current_LevelMap[i][j] = map_N4.array[i][j];
+                        }
+                    }
+                    break;
                 }
                 default: break;
             }

@@ -12,6 +12,7 @@ void normal_mode(void){
     //value initialization and map generation
     srand(time(NULL));
     score = 0;
+    total_score = 0;
     heart = 3;
     level = 1;
     invincible_buffer = 0;
@@ -19,7 +20,7 @@ void normal_mode(void){
     stage_change(NORMAL, level);
     C_spawn();
     GHOST_spawn(current_ghost_number);
-    puts("");
+    puts("\n");
     MapRenew();
     
     //pacman moving
@@ -51,7 +52,8 @@ void normal_mode(void){
                     charswap(&current_LevelMap[currentspot_y][currentspot_x], &current_LevelMap[currentspot_y - 1][currentspot_x]);
                     dot_logic_function(&step_checker_y, &step_checker_x); // detect '.' and execute its logic function
                     bigdot_logic_function(&step_checker_y, &step_checker_x); // detect '$' and execute its logic function
-                    invincible_logic_function(&step_checker_y, &step_checker_x, UP);
+                    heal_logic_function(&step_checker_y, &step_checker_x); // detect 'H' and execute its logic function
+                    invincible_logic_function(&step_checker_y, &step_checker_x, UP); // execute its logic function when pacman has super buff
                     currentspot_y -= 1;
                     step_checker_x = currentspot_x; //renew step_cheker
                     step_checker_y = currentspot_y;
@@ -67,6 +69,7 @@ void normal_mode(void){
                     charswap(&current_LevelMap[currentspot_y][currentspot_x], &current_LevelMap[currentspot_y + 1][currentspot_x]);
                     dot_logic_function(&step_checker_y, &step_checker_x);
                     bigdot_logic_function(&step_checker_y, &step_checker_x);
+                    heal_logic_function(&step_checker_y, &step_checker_x);
                     invincible_logic_function(&step_checker_y, &step_checker_x, DOWN);
                     currentspot_y += 1;
                     step_checker_x = currentspot_x;
@@ -83,6 +86,7 @@ void normal_mode(void){
                     charswap(&current_LevelMap[currentspot_y][currentspot_x], &current_LevelMap[currentspot_y][currentspot_x + 1]);
                     dot_logic_function(&step_checker_y, &step_checker_x);
                     bigdot_logic_function(&step_checker_y, &step_checker_x);
+                    heal_logic_function(&step_checker_y, &step_checker_x);
                     invincible_logic_function(&step_checker_y, &step_checker_x, RIGHT);
                     currentspot_x += 1;
                     step_checker_x = currentspot_x;
@@ -99,6 +103,7 @@ void normal_mode(void){
                     charswap(&current_LevelMap[currentspot_y][currentspot_x], &current_LevelMap[currentspot_y][currentspot_x - 1]);
                     dot_logic_function(&step_checker_y, &step_checker_x);
                     bigdot_logic_function(&step_checker_y, &step_checker_x);
+                    heal_logic_function(&step_checker_y, &step_checker_x);
                     invincible_logic_function(&step_checker_y, &step_checker_x, LEFT);
                     currentspot_x -= 1;
                     step_checker_x = currentspot_x;
@@ -184,7 +189,24 @@ void normal_mode(void){
                 default: break;
             }
         }
-        MapRenew();
+        // 進入下一關的條件和血量歸零執行的程式
+        if(score >= current_levelUP_score  && heart > 0){
+            level += 1;
+            total_score += score;
+            score = 0;
+            invincible_buffer = 0;
+            invincible_step_remain = 0;
+            stage_change(NORMAL, level);
+            C_spawn();
+            GHOST_spawn(current_ghost_number);
+            MapRenew();
+        }
+        else if(heart <= 0){
+            break;
+        }
+        else{
+            MapRenew();
+        }
     }
 }
 
