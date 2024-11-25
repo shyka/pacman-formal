@@ -13,7 +13,7 @@ int current_ghost_spot_x[8];
 int current_ghost_spot_y[8];
 char current_LevelMap[22][22];
 struct Level map_N1 ={
-    4, 40,
+    4, 30,
     "####################",
     "#..................#",
     "#####          #####",
@@ -36,7 +36,7 @@ struct Level map_N1 ={
     "####################"
 };
 struct Level map_N2 ={
-    4, 40,
+    4, 30,
     "####################",
     "#H                 #",
     "#  ##    ##    ##  #",
@@ -102,6 +102,29 @@ struct Level map_N4 ={
     "#...     ##     ...#",
     "#  ##    ##    ##  #",
     "#  ##   H..    ##  #",
+    "####################"
+};
+struct Level map_N5 ={
+    5, 50,
+    "####################",
+    "#....          ....#",
+    "#####          #####",
+    "#                 H#",
+    "#..................#",
+    "#$ ..          ..  #",
+    "#........  ........#",
+    "#.  # #      # #  .#",
+    "#.   .   ##   .   .#",
+    "#.....   ##   .....#",
+    "#.....   ##   .....#",
+    "#.   .   ##   .   .#",
+    "#.  # #      #$#  .#",
+    "#........  ........#",
+    "#                  #",
+    "#...##........##...#",
+    "#                  #",
+    "#####          #####",
+    "#       ####       #",
     "####################"
 };
 
@@ -376,6 +399,16 @@ void stage_change(enum selection1 a, int b){
                     for(int i = 0; i < 20; i++){
                         for(int j = 0; j < 20; j++){
                             current_LevelMap[i][j] = map_N4.array[i][j];
+                        }
+                    }
+                    break;
+                }
+                case 5:{
+                    current_ghost_number = map_N5.ghost_number;
+                    current_levelUP_score = map_N5.levelUP_score;
+                    for(int i = 0; i < 20; i++){
+                        for(int j = 0; j < 20; j++){
+                            current_LevelMap[i][j] = map_N5.array[i][j];
                         }
                     }
                     break;

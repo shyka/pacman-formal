@@ -25,10 +25,10 @@ void normal_mode(void){
     
     //pacman moving
     char key;
-    int step_checker_x = currentspot_x, step_checker_y = currentspot_y;
+    int step_checker_x = currentspot_x, step_checker_y = currentspot_y, key_a_buff = 0;
     enum MoveAction C_move_number, GHOST_move_number;
    
-    while((key = getchar()) != 'p'){
+    while((key = getchar()) != ''){
         
         // 輸入'w''a''s''d'移動pacman
         printf("\n\n");
@@ -111,9 +111,19 @@ void normal_mode(void){
                 }
                 break;
             }
-            case PAUSE: break;
+            case PAUSE:{
+                char key_a;
+                show_words(4);
+                while((key_a = getchar()) == 'p'){
+                    puts("");
+                    goto that;
+                }
+                key_a_buff = 1;
+                break;
+            }
             default: break;
         }
+        if(key_a_buff == 1) break;
         
         // 決定鬼魂的移動模式
         for(int i = 0; i < current_ghost_number; i++){
@@ -205,6 +215,7 @@ void normal_mode(void){
             break;
         }
         else{
+        that:
             MapRenew();
         }
     }

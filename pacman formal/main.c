@@ -52,6 +52,8 @@ int main(void) {
             }
         }
         
+        if(key1 == 'p') break;
+        
     there:
         show_words(3);
         while((key2 = getchar()) != 'p'){
