@@ -14,6 +14,8 @@ void normal_mode(void){
     score = 0;
     heart = 3;
     level = 1;
+    invincible_buffer = 0;
+    invincible_step_remain = 0;
     stage_change(NORMAL, level);
     C_spawn();
     GHOST_spawn(current_ghost_number);
@@ -43,10 +45,13 @@ void normal_mode(void){
                 ghost_logic_function(&step_checker_y, &step_checker_x, UP); // detect '@' and execute its logic function
                 step_checker_x = currentspot_x; // renew step_checker
                 step_checker_y = currentspot_y;
-                if(current_LevelMap[step_checker_y - 1][step_checker_x] != WALL && current_LevelMap[step_checker_y - 1][step_checker_x] != GHOST){
+                if(current_LevelMap[step_checker_y - 1][step_checker_x] != WALL
+                   && current_LevelMap[step_checker_y - 1][step_checker_x] != GHOST){
                     //if next step don't encounter with WALL or GHOST, swap 'C' to next spot
                     charswap(&current_LevelMap[currentspot_y][currentspot_x], &current_LevelMap[currentspot_y - 1][currentspot_x]);
                     dot_logic_function(&step_checker_y, &step_checker_x); // detect '.' and execute its logic function
+                    bigdot_logic_function(&step_checker_y, &step_checker_x); // detect '$' and execute its logic function
+                    invincible_logic_function(&step_checker_y, &step_checker_x, UP);
                     currentspot_y -= 1;
                     step_checker_x = currentspot_x; //renew step_cheker
                     step_checker_y = currentspot_y;
@@ -57,9 +62,12 @@ void normal_mode(void){
                 ghost_logic_function(&step_checker_y, &step_checker_x, DOWN);
                 step_checker_x = currentspot_x;
                 step_checker_y = currentspot_y;
-                if(current_LevelMap[step_checker_y + 1][step_checker_x] != WALL && current_LevelMap[step_checker_y + 1][step_checker_x] != GHOST){
+                if(current_LevelMap[step_checker_y + 1][step_checker_x] != WALL
+                   && current_LevelMap[step_checker_y + 1][step_checker_x] != GHOST){
                     charswap(&current_LevelMap[currentspot_y][currentspot_x], &current_LevelMap[currentspot_y + 1][currentspot_x]);
                     dot_logic_function(&step_checker_y, &step_checker_x);
+                    bigdot_logic_function(&step_checker_y, &step_checker_x);
+                    invincible_logic_function(&step_checker_y, &step_checker_x, DOWN);
                     currentspot_y += 1;
                     step_checker_x = currentspot_x;
                     step_checker_y = currentspot_y;
@@ -70,9 +78,12 @@ void normal_mode(void){
                 ghost_logic_function(&step_checker_y, &step_checker_x, RIGHT);
                 step_checker_x = currentspot_x;
                 step_checker_y = currentspot_y;
-                if(current_LevelMap[step_checker_y][step_checker_x + 1] != WALL && current_LevelMap[step_checker_y][step_checker_x + 1] != GHOST){
+                if(current_LevelMap[step_checker_y][step_checker_x + 1] != WALL
+                   && current_LevelMap[step_checker_y][step_checker_x + 1] != GHOST){
                     charswap(&current_LevelMap[currentspot_y][currentspot_x], &current_LevelMap[currentspot_y][currentspot_x + 1]);
                     dot_logic_function(&step_checker_y, &step_checker_x);
+                    bigdot_logic_function(&step_checker_y, &step_checker_x);
+                    invincible_logic_function(&step_checker_y, &step_checker_x, RIGHT);
                     currentspot_x += 1;
                     step_checker_x = currentspot_x;
                     step_checker_y = currentspot_y;
@@ -83,9 +94,12 @@ void normal_mode(void){
                 ghost_logic_function(&step_checker_y, &step_checker_x, LEFT);
                 step_checker_x = currentspot_x;
                 step_checker_y = currentspot_y;
-                if(current_LevelMap[step_checker_y][step_checker_x - 1] != WALL && current_LevelMap[step_checker_y][step_checker_x - 1] != GHOST){
+                if(current_LevelMap[step_checker_y][step_checker_x - 1] != WALL
+                   && current_LevelMap[step_checker_y][step_checker_x - 1] != GHOST){
                     charswap(&current_LevelMap[currentspot_y][currentspot_x], &current_LevelMap[currentspot_y][currentspot_x - 1]);
                     dot_logic_function(&step_checker_y, &step_checker_x);
+                    bigdot_logic_function(&step_checker_y, &step_checker_x);
+                    invincible_logic_function(&step_checker_y, &step_checker_x, LEFT);
                     currentspot_x -= 1;
                     step_checker_x = currentspot_x;
                     step_checker_y = currentspot_y;
@@ -109,43 +123,61 @@ void normal_mode(void){
             
             switch(GHOST_move_number){
                 case UP:{ //上移
-                    if(current_LevelMap[current_ghost_position_y[i] - 1][current_ghost_position_x[i]] != WALL && current_LevelMap[current_ghost_position_y[i] - 1][current_ghost_position_x[i]] != GHOST){
+                    if(current_LevelMap[current_ghost_spot_y[i] - 1][current_ghost_spot_x[i]] != WALL
+                       && current_LevelMap[current_ghost_spot_y[i] - 1][current_ghost_spot_x[i]] != GHOST
+                       && current_LevelMap[current_ghost_spot_y[i] - 1][current_ghost_spot_x[i]] != SGHOST){
                         //if next step don't encounter with WALL or GHOST, swap '@' to next spot
-                        G_ghost_logic_function(&current_ghost_position_y[i], &current_ghost_position_x[i], UP); // execute its logic function if ghost move to pacman
+                        G_ghost_logic_function(&current_ghost_spot_y[i], &current_ghost_spot_x[i], UP); // execute its logic function if ghost move to pacman
                         step_checker_x = currentspot_x; // renew step_checker
                         step_checker_y = currentspot_y;
-                        charswap(&current_LevelMap[current_ghost_position_y[i]][current_ghost_position_x[i]], &current_LevelMap[current_ghost_position_y[i] - 1][current_ghost_position_x[i]]);
-                        current_ghost_position_y[i] -= 1;
+                        if(current_LevelMap[current_ghost_spot_y[i] - 1][current_ghost_spot_x[i]] != 'C'){
+                            charswap(&current_LevelMap[current_ghost_spot_y[i]][current_ghost_spot_x[i]],
+                                     &current_LevelMap[current_ghost_spot_y[i] - 1][current_ghost_spot_x[i]]);
+                            current_ghost_spot_y[i] -= 1;
+                        }
                     }
                     break;
                 }
                 case DOWN:{ //下移
-                    if(current_LevelMap[current_ghost_position_y[i] + 1][current_ghost_position_x[i]] != WALL && current_LevelMap[current_ghost_position_y[i] + 1][current_ghost_position_x[i]] != GHOST){
-                        G_ghost_logic_function(&current_ghost_position_y[i], &current_ghost_position_x[i], DOWN); // execute its logic function if ghost move to pacman
-                        step_checker_x = currentspot_x; // renew step_checker
+                    if(current_LevelMap[current_ghost_spot_y[i] + 1][current_ghost_spot_x[i]] != WALL
+                       && current_LevelMap[current_ghost_spot_y[i] + 1][current_ghost_spot_x[i]] != GHOST
+                       && current_LevelMap[current_ghost_spot_y[i] + 1][current_ghost_spot_x[i]] != SGHOST){
+                        G_ghost_logic_function(&current_ghost_spot_y[i], &current_ghost_spot_x[i], DOWN);
+                        step_checker_x = currentspot_x;
                         step_checker_y = currentspot_y;
-                        charswap(&current_LevelMap[current_ghost_position_y[i]][current_ghost_position_x[i]], &current_LevelMap[current_ghost_position_y[i] + 1][current_ghost_position_x[i]]);
-                        current_ghost_position_y[i] += 1;
+                        if(current_LevelMap[current_ghost_spot_y[i] + 1][current_ghost_spot_x[i]] != 'C'){
+                            charswap(&current_LevelMap[current_ghost_spot_y[i]][current_ghost_spot_x[i]],
+                                     &current_LevelMap[current_ghost_spot_y[i] + 1][current_ghost_spot_x[i]]);
+                            current_ghost_spot_y[i] += 1;
+                        }
                     }
                     break;
                 }
                 case RIGHT:{ //右移
-                    if(current_LevelMap[current_ghost_position_y[i]][current_ghost_position_x[i] + 1] != WALL && current_LevelMap[current_ghost_position_y[i]][current_ghost_position_x[i] + 1] != GHOST){
-                        G_ghost_logic_function(&current_ghost_position_y[i], &current_ghost_position_x[i], RIGHT); // execute its logic function if ghost move to pacman
-                        step_checker_x = currentspot_x; // renew step_checker
+                    if(current_LevelMap[current_ghost_spot_y[i]][current_ghost_spot_x[i] + 1] != WALL
+                       && current_LevelMap[current_ghost_spot_y[i]][current_ghost_spot_x[i] + 1] != GHOST
+                       && current_LevelMap[current_ghost_spot_y[i]][current_ghost_spot_x[i] + 1] != SGHOST){
+                        G_ghost_logic_function(&current_ghost_spot_y[i], &current_ghost_spot_x[i], RIGHT);
+                        step_checker_x = currentspot_x;
                         step_checker_y = currentspot_y;
-                        charswap(&current_LevelMap[current_ghost_position_y[i]][current_ghost_position_x[i]], &current_LevelMap[current_ghost_position_y[i]][current_ghost_position_x[i] + 1]);
-                        current_ghost_position_x[i] += 1;
+                        if(current_LevelMap[current_ghost_spot_y[i]][current_ghost_spot_x[i] + 1] != 'C'){
+                            charswap(&current_LevelMap[current_ghost_spot_y[i]][current_ghost_spot_x[i]], &current_LevelMap[current_ghost_spot_y[i]][current_ghost_spot_x[i] + 1]);
+                            current_ghost_spot_x[i] += 1;
+                        }
                     }
                     break;
                 }
                 case LEFT:{ // 左移
-                    if(current_LevelMap[current_ghost_position_y[i]][current_ghost_position_x[i] - 1] != WALL && current_LevelMap[current_ghost_position_y[i]][current_ghost_position_x[i] - 1] != GHOST){
-                        G_ghost_logic_function(&current_ghost_position_y[i], &current_ghost_position_x[i], LEFT); // execute its logic function if ghost move to pacman
-                        step_checker_x = currentspot_x; // renew step_checker
+                    if(current_LevelMap[current_ghost_spot_y[i]][current_ghost_spot_x[i] - 1] != WALL
+                       && current_LevelMap[current_ghost_spot_y[i]][current_ghost_spot_x[i] - 1] != GHOST
+                       && current_LevelMap[current_ghost_spot_y[i]][current_ghost_spot_x[i] - 1] != SGHOST){
+                        G_ghost_logic_function(&current_ghost_spot_y[i], &current_ghost_spot_x[i], LEFT);
+                        step_checker_x = currentspot_x;
                         step_checker_y = currentspot_y;
-                        charswap(&current_LevelMap[current_ghost_position_y[i]][current_ghost_position_x[i]], &current_LevelMap[current_ghost_position_y[i]][current_ghost_position_x[i] - 1]);
-                        current_ghost_position_x[i] -= 1;
+                        if(current_LevelMap[current_ghost_spot_y[i]][current_ghost_spot_x[i] - 1] != 'C'){
+                            charswap(&current_LevelMap[current_ghost_spot_y[i]][current_ghost_spot_x[i]], &current_LevelMap[current_ghost_spot_y[i]][current_ghost_spot_x[i] - 1]);
+                            current_ghost_spot_x[i] -= 1;
+                        }
                     }
                     break;
                 }
