@@ -16,8 +16,9 @@ void infinity_mode(void){
     total_score = 0;
     heart = 3;
     level = 1;
-    Nmode = 0;
-    Imode = 1;
+    wight_LevelUP = 0;
+    wight_ghost_number = 0;
+    wight_invincible_step = 0;
     invincible_buffer = 0;
     invincible_step_remain = 0;
     stage_change(INFINITE, level);
@@ -45,6 +46,8 @@ void infinity_mode(void){
             default: C_move_number = 100; break;
         }
         
+        step_checker_x = currentspot_x; // renew step_checker
+        step_checker_y = currentspot_y;
         switch(C_move_number){ // 根據輸入的鍵，決定pacman下一步的移動方向和行為
             case UP:{ // 上移
                 step_count += 1; // 計算以移動的步數
@@ -218,6 +221,13 @@ void infinity_mode(void){
         
         // 進入下一關的條件和血量歸零執行的程式
         if(score >= current_levelUP_score  && heart > 0){
+            if(level % 3 == 0 && wight_ghost_number < 12 && wight_LevelUP < 60){ // 每隔三關所需的下一階段分數和鬼魂數量都會提升
+                wight_LevelUP += 5;
+                wight_ghost_number += 1;
+            }
+            if(level % 5 == 0 && wight_invincible_step < 40){ // 每隔五關無敵狀態持續時間（步數）會減少
+                wight_invincible_step += 5;
+            }
             level += 1;
             total_score += score;
             score = 0;

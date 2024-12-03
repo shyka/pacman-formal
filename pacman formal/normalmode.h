@@ -16,8 +16,9 @@ void normal_mode(void){
     total_score = 0;
     heart = 3;
     level = 1;
-    Nmode = 1;
-    Imode = 0;
+    wight_LevelUP = 0;
+    wight_ghost_number = 0;
+    wight_invincible_step = 0;
     invincible_buffer = 0;
     invincible_step_remain = 0;
     stage_change(NORMAL, level);
@@ -44,6 +45,8 @@ void normal_mode(void){
             default: C_move_number = 100; break;
         }
         
+        step_checker_x = currentspot_x; // renew step_checker
+        step_checker_y = currentspot_y;
         switch(C_move_number){ // 根據輸入的鍵，決定pacman下一步的移動方向和行為
             case UP:{ // 上移
                 step_count += 1; // 計算以移動的步數

@@ -14,8 +14,8 @@
             filePath = "pacman formal/custom_function.h"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "773"
-            endingLineNumber = "773"
+            startingLineNumber = "776"
+            endingLineNumber = "776"
             landmarkName = "stage_change(a, b)"
             landmarkType = "9">
          </BreakpointContent>
@@ -30,8 +30,8 @@
             filePath = "pacman formal/custom_function.h"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "772"
-            endingLineNumber = "772"
+            startingLineNumber = "775"
+            endingLineNumber = "775"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -46,8 +46,8 @@
             filePath = "pacman formal/custom_function.h"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "765"
-            endingLineNumber = "765"
+            startingLineNumber = "768"
+            endingLineNumber = "768"
             landmarkName = "G_ghost_logic_function(y, x, action)"
             landmarkType = "9">
          </BreakpointContent>

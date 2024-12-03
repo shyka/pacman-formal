@@ -25,7 +25,7 @@ void show_words(int a){
             printf("'.' stands for dots. Eating each one them will get 1 point.\n");
             printf("\n'$' stands for bigdots. Eating it allows you gain the [super buff] and get 3 points.\n");
             printf("During the super buff time, pacman will temporary become invincible.");
-            printf("It also allows you to eat ghosts(they will turn to '!') then get 2 points.\nThe effect will disappear after moving 30 steps.\n");
+            printf("It also allows you to eat ghosts(they will turn to '!') then get 2 points.\nThe effect will disappear after moving 40 steps.\n");
             printf("\nMode explaination:\n");
             printf("* NORMAL: Concludes 20 level. Each level requires different points to go to next level.\n");
             printf("* INFINITY: Each coures will come out randomly, It's endless gamemode unless you die or quit the game.\n");
