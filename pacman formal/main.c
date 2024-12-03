@@ -5,6 +5,7 @@
 #include "showwords.h"
 #include "custom_function.h"
 #include "normalmode.h"
+#include "infinitymode.h"
 
 
 int main(void) {
@@ -31,7 +32,8 @@ int main(void) {
                     break;
                 }
                 case INFINITE:{
-                    printf("infinite");
+                    infinity_mode();
+                    goto there;
                     break;
                 }
                 case QUIT: break;
@@ -55,7 +57,6 @@ int main(void) {
         if(key1 == 'p') break;
         
     there:
-        show_words(3);
         while((key2 = getchar()) != 'p'){
             enum selection2 choose2;
             switch(key2){
@@ -67,7 +68,12 @@ int main(void) {
             }
             switch(choose2){
                 case AGAIN:{
-                    normal_mode();
+                    if(Nmode == 1 && Imode == 0){
+                        normal_mode();
+                    }
+                    if(Nmode == 0 && Imode == 1){
+                        infinity_mode();
+                    }
                     goto there;
                     break;
                 }

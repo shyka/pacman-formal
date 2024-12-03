@@ -1,5 +1,5 @@
-#ifndef NORMALMODE
-#define NORMALMODE
+#ifndef INFINITYMODE
+#define INFINITYMODE
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,7 +7,7 @@
 #include <time.h>
 #include "custom_function.h"
 
-void normal_mode(void){
+void infinity_mode(void){
     
     //value initialization and map generation
     srand(time(NULL));
@@ -16,13 +16,14 @@ void normal_mode(void){
     total_score = 0;
     heart = 3;
     level = 1;
-    Nmode = 1;
-    Imode = 0;
+    Nmode = 0;
+    Imode = 1;
     invincible_buffer = 0;
     invincible_step_remain = 0;
-    stage_change(NORMAL, level);
+    stage_change(INFINITE, level);
     C_spawn();
     GHOST_spawn(current_ghost_number);
+    I_RNGitmes_spawn();
     puts("\n");
     MapRenew();
     
@@ -216,19 +217,16 @@ void normal_mode(void){
         }
         
         // 進入下一關的條件和血量歸零執行的程式
-        if(level == 21){
-            show_words(5);
-            break;
-        }
-        else if(score >= current_levelUP_score  && heart > 0 && level != 21){
+        if(score >= current_levelUP_score  && heart > 0){
             level += 1;
             total_score += score;
             score = 0;
             invincible_buffer = 0;
             invincible_step_remain = 0;
-            stage_change(NORMAL, level);
+            stage_change(INFINITE, level);
             C_spawn();
             GHOST_spawn(current_ghost_number);
+            I_RNGitmes_spawn();
             MapRenew();
         }
         else if(heart <= 0){
