@@ -42,7 +42,7 @@ void normal_mode(void){
             case 'd': C_move_number = RIGHT; break;
             case 'w': C_move_number = UP; break;
             case 'p': C_move_number = PAUSE; break;
-            default: C_move_number = 100; break;
+            default: C_move_number = 100; break; //常數100並沒有實際意義，單純是除錯值
         }
         
         step_checker_x = currentspot_x; // renew step_checker
@@ -138,7 +138,7 @@ void normal_mode(void){
             default: break;
         }
         
-        if(key_a_buff == 1){
+        if(key_a_buff == 1){ // 暫停後離開遊戲，跑出結算頁面
             show_words(3);
             break;
         }
@@ -151,7 +151,7 @@ void normal_mode(void){
                 case 1: GHOST_move_number = DOWN; break;
                 case 2: GHOST_move_number = RIGHT; break;
                 case 3: GHOST_move_number = UP; break;
-                default: GHOST_move_number = 100; break;
+                default: GHOST_move_number = 100; break; //常數100並沒有實際意義，單純是除錯值
             }
             
             switch(GHOST_move_number){
@@ -220,7 +220,7 @@ void normal_mode(void){
         
         // 進入下一關的條件和血量歸零執行的程式
         if(level == 21){
-            show_words(5);
+            show_words(5); //完全通關，總結畫面
             break;
         }
         else if(score >= current_levelUP_score  && heart > 0 && level != 21){
@@ -235,7 +235,7 @@ void normal_mode(void){
             MapRenew();
         }
         else if(heart <= 0){
-            show_words(3);
+            show_words(3); //gameover總結畫面
             break;
         }
         else{

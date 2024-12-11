@@ -493,10 +493,10 @@ struct Level map_I5 ={
 };
 
 char current_LevelMap[22][22];
-int score = 0, total_score = 0, heart = 3, level = 1, step_count = 0;
-int Nmode = 0, Imode = 0 , invincible_buffer = 0, invincible_step_remain = 0;
-int currentspot_x, currentspot_y, ghostspot_x, ghostspot_y, current_ghost_number, current_ghost_spot_x[15], current_ghost_spot_y[15];
-int current_levelUP_score, wight_LevelUP = 0, wight_ghost_number = 0, wight_invincible_step = 0;
+int score = 0, total_score = 0, heart = 3, level = 1, step_count = 0; //人物狀態有關的變數
+int invincible_buffer = 0, invincible_step_remain = 0; //特殊狀態有關的變數
+int currentspot_x, currentspot_y, ghostspot_x, ghostspot_y, current_ghost_number, current_ghost_spot_x[15], current_ghost_spot_y[15]; //地圖生成與操縱有關的變數
+int Nmode = 0, Imode = 0, current_levelUP_score, wight_LevelUP = 0, wight_ghost_number = 0, wight_invincible_step = 0; //與升級有關的變數
 enum selection1{NORMAL, INFINITE, QUIT, WRONG_KEY1, RULE_CHECK};
 enum selection2{AGAIN, BACK_TO_MENU, ENDGAME, WRONG_KEY2};
 enum MoveAction{UP, DOWN, RIGHT, LEFT, PAUSE};
@@ -622,7 +622,7 @@ void I_RNGitmes_spawn(void){ // 隨機生成物品的位置（不會在‘＃’
 void dot_logic_function(int *y, int *x){
     if(current_LevelMap[*y][*x] == DOT){
         charreplace(&current_LevelMap[*y][*x], ' ');
-        score += 1;
+        score += 1; //加1分
     }
 }
 
@@ -630,9 +630,9 @@ void dot_logic_function(int *y, int *x){
 void bigdot_logic_function(int *y, int *x){
     if(current_LevelMap[*y][*x] == BIGDOT){
         charreplace(&current_LevelMap[*y][*x], ' ');
-        invincible_buffer = 1;
+        invincible_buffer = 1; //進入無敵狀態
         invincible_step_remain = 41 - wight_invincible_step;
-        score += 3;
+        score += 3; //加3分
     }
 }
 
@@ -647,7 +647,7 @@ void heal_logic_function(int *y, int *x){
 void poision_logic_function(int *y,int *x){
     if(current_LevelMap[*y][*x] == POISION){
         charreplace(&current_LevelMap[*y][*x], ' ');
-        if(invincible_buffer == 0) heart -= 1;
+        if(invincible_buffer == 0) heart -= 1; //無敵狀態下不會扣血
     }
 }
 
@@ -655,11 +655,11 @@ void poision_logic_function(int *y,int *x){
 void invincible_logic_function(int *y, int *x, enum MoveAction action){
     if(invincible_buffer == 1){
         for(int i = 0; i < current_ghost_number; i++){
-            charreplace(&current_LevelMap[current_ghost_spot_y[i]][current_ghost_spot_x[i]], '!');
+            charreplace(&current_LevelMap[current_ghost_spot_y[i]][current_ghost_spot_x[i]], '!'); //無敵模式時，所有鬼魂以'!'標示
         }
         if(current_LevelMap[*y][*x] == '!'){
             charreplace(&current_LevelMap[*y][*x], ' ');
-            int target_sghostspot_x = 0, target_sghostspot_y = 0, checker = 0;
+            int target_sghostspot_x = 0, target_sghostspot_y = 0, checker = 0; //藉由對比鬼魂座標數據，找尋被吃掉之鬼魂的座標
             switch(action){
                 case UP: target_sghostspot_x = *x; target_sghostspot_y = *y - 1; charreplace(&current_LevelMap[*y - 1][*x], 'C'); break;
                 case DOWN: target_sghostspot_x = *x; target_sghostspot_y = *y + 1; charreplace(&current_LevelMap[*y + 1][*x], 'C');break;
@@ -667,18 +667,18 @@ void invincible_logic_function(int *y, int *x, enum MoveAction action){
                 case LEFT: target_sghostspot_x = *x - 1; target_sghostspot_y = *y; charreplace(&current_LevelMap[*y][*x - 1], 'C');break;
                 default: break;
             }
-            for(int i = 0; i < current_ghost_number; i++){
+            for(int i = 0; i < current_ghost_number; i++){ //鎖定目標
                 if(current_ghost_spot_x[i] == target_sghostspot_x && current_ghost_spot_y[i] == target_sghostspot_y){
                     checker = i;
                     break;
                 }
             }
-            for(int i = checker; i < current_ghost_number - 1; i++){
+            for(int i = checker; i < current_ghost_number - 1; i++){ //從目標鬼魂座標數據陣列，把之後所有的鬼魂數據往前移一項
                 current_ghost_spot_x[i] = current_ghost_spot_x[i + 1];
                 current_ghost_spot_y[i] = current_ghost_spot_y[i + 1];
             }
-            current_ghost_number -= 1;
-            score += 2;
+            current_ghost_number -= 1; //減少一個運作的鬼魂數量
+            score += 2; //吃掉鬼魂加2分
         }
     }
     if(invincible_step_remain > 0){
