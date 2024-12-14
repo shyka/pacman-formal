@@ -588,7 +588,7 @@ void GHOST_spawn(int a){ // 隨機生成一開始鬼魂的位置（不會在‘�
 }
 
 
-void I_RNGitmes_spawn(void){ // 隨機生成物品的位置（不會在‘＃’, '@', '.', '$', 'H', 'P', 'C'生成)
+void I_RNGitems_spawn(void){ // 隨機生成物品的位置（不會在‘＃’, '@', '.', '$', 'H', 'P', 'C'生成)
     for(int i = 0; i < 88; i++){ // 80 dots, 5 poision, 1 heal, 2 bigdots
         while(1){
             int items_spot_x = rand() % 20;

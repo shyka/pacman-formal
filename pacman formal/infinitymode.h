@@ -24,7 +24,7 @@ void infinity_mode(void){
     stage_change(INFINITE, level);
     C_spawn();
     GHOST_spawn(current_ghost_number);
-    I_RNGitmes_spawn();
+    I_RNGitems_spawn();
     puts("\n");
     MapRenew();
     
@@ -236,7 +236,7 @@ void infinity_mode(void){
             stage_change(INFINITE, level);
             C_spawn();
             GHOST_spawn(current_ghost_number);
-            I_RNGitmes_spawn();
+            I_RNGitems_spawn();
             MapRenew();
         }
         else if(heart <= 0){
