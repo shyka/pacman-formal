@@ -10,7 +10,7 @@
 void normal_mode(void){
     
     //value initialization and map generation
-    srand(time(NULL));
+    srand((unsigned int)time(NULL));
     step_count = 0;
     score = 0;
     total_score = 0;
